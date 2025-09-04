@@ -1,0 +1,51 @@
+spring:
+  application:
+    name: guard
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+  datasource:
+      url: jdbc:postgresql://localhost:5432/configure
+      username: postgres
+      password: 309927605
+      driver-class-name: org.postgresql.Driver
+      hikari:
+        initialization-fail-timeout: -1
+        connection-timeout: 30000
+        validation-timeout: 5000
+        maximum-pool-size: 10
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+
+backend_server:
+  web_url: http://localhost:5173
+
+jwt:
+  secret_key: "aVeryLongSecretKeyThatIsAtLeastSixtyFourCharactersLongForHS512Encryption!!!"
+  auth:
+    users:
+      admin_usr: tanghai
+      admin_pwd: 093606872
+
+telegram:
+  enable: false
+  bot-token: 123
+  chat-id: 123
+
+setting:
+  enableSaveLog: false
+
+server:
+  rate_limit: 100
+  servlet:
+    context-path: /guard
+  port: 8080
+
+app:
+  version: 1.0.10

@@ -1,0 +1,38 @@
+spring:
+#  profiles:
+#    active: local
+  application:
+    name: guard
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: ${DB_HOST}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    hikari:
+      initialization-fail-timeout: -1  # never fail at startup if DB unavailable
+      connection-timeout: 30000        # 30s per try
+      validation-timeout: 5000
+      maximum-pool-size: 10
+    jpa:
+      database-platform: org.hibernate.dialect.PostgreSQLDialect
+      hibernate:
+        ddl-auto: update
+      open-in-view: ${JPA_VIEW_MODE}
+
+    jwt:
+      secret_key: ${JWT_SECRET_KEY}
+
+server:
+  rate_limit: ${RATE_LIMIT}
+  servlet:
+    context-path: /guard
+  port: 8080
+
+app:
+  version: BETA.0.0.1
