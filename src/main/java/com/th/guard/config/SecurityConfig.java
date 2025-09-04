@@ -22,8 +22,8 @@ import java.util.List;
 @Configuration
 public class SecurityConfig {
 
-    @Value("${backend_server.web_url:https://expense-tracker-v2-web.onrender.com/}")
-    private String SERVER_URL;
+    @Value("${backend_server.web_url:https://expense-tracker-v2-web.onrender.com}")
+    private String SERVER_URL; // no trailing slash
 
     @Autowired
     private JwtAuthFilter jwtFilter;
@@ -44,8 +44,8 @@ public class SecurityConfig {
                 .and()
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                .antMatchers("/api/auth/**").permitAll()
+                .antMatchers(HttpMethod.OPTIONS, "/**").permitAll() // allow preflight
+                .antMatchers("/api/auth/**").permitAll()           // public auth endpoints
                 .anyRequest().authenticated();
 
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
@@ -56,13 +56,14 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of(SERVER_URL)); // frontend origin
+        config.setAllowedOrigins(List.of("https://expense-tracker-v2-web.onrender.com", "http://localhost:5173")); // prod & dev
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
-        config.setAllowedHeaders(List.of("Authorization", "Content-Type"));
+        config.setAllowedHeaders(List.of("*")); // allow all headers including Authorization
         config.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
         return source;
     }
+
 }
