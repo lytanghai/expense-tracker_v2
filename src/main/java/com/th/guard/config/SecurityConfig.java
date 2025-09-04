@@ -22,7 +22,7 @@ import java.util.List;
 @Configuration
 public class SecurityConfig {
 
-    @Value("${backend_server.web_url}")
+    @Value("${backend_server.web_url:https://expense-tracker-v2-web.onrender.com/}")
     private String SERVER_URL;
 
     @Autowired

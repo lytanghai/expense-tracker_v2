@@ -13,7 +13,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class WebConfig {
 
-    @Value("${backend_server.web_url}")
+    @Value("${backend_server.web_url:https://expense-tracker-v2-web.onrender.com/}")
     private String SERVER_URL;
 
     @Bean
