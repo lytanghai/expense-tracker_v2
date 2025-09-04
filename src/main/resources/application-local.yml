@@ -40,6 +40,7 @@ telegram:
 
 setting:
   enableSaveLog: false
+  enableRegister: true
 
 server:
   rate_limit: 100

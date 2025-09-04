@@ -1,6 +1,6 @@
 spring:
-#  profiles:
-#    active: local
+  profiles:
+    active: local
   application:
     name: guard
   cloud:
@@ -27,6 +27,9 @@ spring:
 
     jwt:
       secret_key: ${JWT_SECRET_KEY}
+
+backend_server:
+  web_url: ${UI_WEB_URL}
 
 server:
   rate_limit: ${RATE_LIMIT}
