@@ -32,6 +32,7 @@ backend_server:
   web_url: ${UI_WEB_URL:https://expense-tracker-v2-web.onrender.com}
 
 setting:
+  enableSaveLog: ${ENABLE_SAVE_LOG}
   enableRegister: ${ALLOW_REGISTER}
 
 server:
