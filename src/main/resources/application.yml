@@ -30,6 +30,7 @@ spring:
 
 backend_server:
   web_url: ${UI_WEB_URL}
+  enableRegister: ${ALLOW_REGISTER}
 
 server:
   rate_limit: ${RATE_LIMIT}
