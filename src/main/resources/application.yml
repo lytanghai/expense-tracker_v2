@@ -29,7 +29,9 @@ spring:
       secret_key: ${JWT_SECRET_KEY}
 
 backend_server:
-  web_url: ${UI_WEB_URL}
+  web_url: ${UI_WEB_URL:https://expense-tracker-v2-web.onrender.com}
+
+setting:
   enableRegister: ${ALLOW_REGISTER}
 
 server:
