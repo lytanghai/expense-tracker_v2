@@ -27,14 +27,22 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain) {
         try {
+            // 1️⃣ Skip OPTIONS requests (preflight)
+            if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+                response.setStatus(HttpServletResponse.SC_OK);
+                filterChain.doFilter(request, response);
+                return;
+            }
+
             String path = request.getRequestURI();
 
-            // Skip login/register endpoints
+            // 2️⃣ Skip login/register endpoints
             if (path.startsWith("/api/auth/login") || path.startsWith("/api/auth/register")) {
                 filterChain.doFilter(request, response);
                 return;
             }
 
+            // 3️⃣ JWT authentication logic
             String header = request.getHeader("Authorization");
             if (header != null && header.startsWith("Bearer ")) {
                 String token = header.substring(7);
@@ -42,8 +50,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                     String username = jwtUtil.getUsernameFromJwt(token);
                     var user = userRepo.findByUsername(username).orElse(null);
                     if (user != null) {
-                        UsernamePasswordAuthenticationToken auth =
-                                new UsernamePasswordAuthenticationToken(user, null, null);
+                        var auth = new UsernamePasswordAuthenticationToken(user, null, null);
                         auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                         SecurityContextHolder.getContext().setAuthentication(auth);
                     }
@@ -52,10 +59,12 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         } catch (Exception e) {
             System.out.println("JWT Error: " + e.getMessage());
         }
+
         try {
             filterChain.doFilter(request, response);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
+
 }

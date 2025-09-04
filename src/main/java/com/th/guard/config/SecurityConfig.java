@@ -56,10 +56,13 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("https://expense-tracker-v2-web.onrender.com", "http://localhost:5173")); // prod & dev
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
-        config.setAllowedHeaders(List.of("*")); // allow all headers including Authorization
-        config.setAllowCredentials(true);
+        config.setAllowedOrigins(List.of(
+                "https://expense-tracker-v2-web.onrender.com",
+                "http://localhost:5173"
+        ));
+        config.setAllowedMethods(List.of("GET","POST","PUT","DELETE","OPTIONS","PATCH"));
+        config.setAllowedHeaders(List.of("*"));  // very important
+        config.setAllowCredentials(true);        // needed if frontend uses cookies
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
