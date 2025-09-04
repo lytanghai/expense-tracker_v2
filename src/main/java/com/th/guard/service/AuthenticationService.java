@@ -14,6 +14,8 @@ import com.th.guard.repository.UserRepository;
 import com.th.guard.util.DateUtil;
 import com.th.guard.util.JwtUtil;
 import com.th.guard.util.ResponseBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -26,6 +28,8 @@ import java.util.List;
  * */
 @Service
 public class AuthenticationService {
+
+    private final Logger log = LoggerFactory.getLogger(AuthenticationService.class);
 
     @Autowired private UserRepository userRepo;
     @Autowired private PasswordEncoder encoder;
@@ -84,6 +88,8 @@ public class AuthenticationService {
 
     }
     public ResponseBuilder<RegisterResp> register(RegisterReq registerReq) {
+        log.info("Register Incoming...! {}", settingProperties.isEnableRegister());
+
         if(settingProperties.isEnableRegister()) {
             String username = registerReq.getUsername();
             String email = registerReq.getEmail();
@@ -128,6 +134,7 @@ public class AuthenticationService {
     }
 
     public ResponseBuilder<LoginResp> login(LoginReq loginReq) throws InterruptedException {
+        log.info("Login...!");
         String username = loginReq.getUsername();
         String email = loginReq.getEmail();
         String password = loginReq.getPassword();
