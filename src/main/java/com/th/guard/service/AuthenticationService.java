@@ -21,7 +21,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Forgot password
@@ -106,6 +108,7 @@ public class AuthenticationService {
                     throw new ServiceException(Constant.UNEXPECTED_ERROR, USER_EML_EXIST);
 
                 UserEntity newUser = new UserEntity();
+
                 newUser.setUsername(username);
                 newUser.setEmail(email);
                 newUser.setPassword(encoder.encode(registerReq.getPassword()));
@@ -150,7 +153,11 @@ public class AuthenticationService {
 
             if(encoder.matches(password, user.getPassword())) {
                 response.setResult(Constant.SUCCESS);
-                response.setToken(jwtUtil.generateToken(username, userId));
+
+                Map<String,Object> claims = new HashMap<>();
+                claims.put("user-id", userId);
+
+                response.setToken(jwtUtil.generateToken(username, claims));
                 response.setUsername(username);
                 response.setEmail(email);
                 response.setCreatedAtStr(DateUtil.format(user.getCreatedAt().toString()));

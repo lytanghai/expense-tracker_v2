@@ -1,6 +1,6 @@
 spring:
-#  profiles:
-#    active: local
+  profiles:
+    active: local
   application:
     name: guard
   cloud:
@@ -27,6 +27,7 @@ spring:
 
 jwt:
   secret_key: ${JWT_SECRET_KEY}
+  expiration-ms: 86400000
 
 backend_server:
   web_url: ${UI_WEB_URL:https://expense-tracker-v2-web.onrender.com}
@@ -43,3 +44,5 @@ server:
 
 app:
   version: BETA.0.0.1
+  cors:
+    allowed-origin: "https://expense-tracker-v2-web.onrender.com"

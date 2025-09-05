@@ -30,6 +30,14 @@ public class UserEntity {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    public UserEntity() {
+    }
+
+    public UserEntity(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
+
     public Long getId() {
         return id;
     }

@@ -1,54 +1,56 @@
 package com.th.guard.util;
 
-import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import javax.crypto.SecretKey;
-import java.util.Base64;
+import java.security.Key;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 
 @Component
 public class JwtUtil {
 
-    private final long jwtExpirationMs = 3600000;
+    @Value("${jwt.secret_key}")
+    private String secret;
 
-    private final SecretKey key = Keys.hmacShaKeyFor(
-        Base64.getDecoder().decode("yI5uXwrEt9pR7hcgV8nE0Wp3K1e8VsE6n9t7WRrN6uGtdjGQYq+6sZGc1K3qC3phFVzxEWExyqAHaVeryLongSecretKeyThatIsAtLeastSixtyFourCharactersLongForHS512Encryption")
-    );
 
-    public String generateToken(String username, long userId) {
-        Map<String,Object> claim = new HashMap<>();
-        claim.put("user_id", userId);
+    @Value("${jwt.expiration-ms}")
+    private long expirationMs;
 
+
+    private Key getSigningKey() {
+        byte[] keyBytes;
+        try {
+            keyBytes = Decoders.BASE64.decode(secret);
+        } catch (IllegalArgumentException e) {
+            keyBytes = secret.getBytes();
+        }
+        return Keys.hmacShaKeyFor(keyBytes);
+    }
+
+
+    public String generateToken(String subject, Map<String, Object> claims) {
+        Date now = new Date();
+        Date expiry = new Date(now.getTime() + expirationMs);
         return Jwts.builder()
-                .setSubject(username)
-                .addClaims(claim)
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationMs))
-                .signWith(key, SignatureAlgorithm.HS512)
+                .setClaims(claims)
+                .setSubject(subject)
+                .setIssuedAt(now)
+                .setExpiration(expiry)
+                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    public String getUsernameFromJwt(String token) {
+    public Claims parseClaims(String token) {
         return Jwts.parserBuilder()
-                .setSigningKey(key)
+                .setSigningKey(getSigningKey())
                 .build()
                 .parseClaimsJws(token)
-                .getBody()
-                .getSubject();
-    }
-
-    public boolean validateJwt(String token) {
-        try {
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
-            return true;
-        } catch (JwtException e) {
-            return false;
-        }
+                .getBody();
     }
 }
