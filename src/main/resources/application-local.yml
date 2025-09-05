@@ -30,12 +30,9 @@ backend_server:
   web_url: http://localhost:5173
 
 jwt:
-  secret_key: YourSuperSecretKeyThatIsAtLeast32CharsLong!
+  secret_key: aVeryLongSecretKeyThatIsAtLeastSixtyFourCharactersLongForHS512Encryption!!!
   expiration-ms: 840000
-  auth:
-    users:
-      admin_usr: tanghai
-      admin_pwd: 093606872
+
 setting:
   enableSaveLog: true
   enableRegister: true
