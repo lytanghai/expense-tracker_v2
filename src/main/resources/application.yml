@@ -21,6 +21,7 @@ spring:
 
 jwt:
   secret_key: ${JWT_SECRET_KEY}
+  expiration-ms: 840000
 
   server:
     rate_limit: ${RATE_LIMIT}
