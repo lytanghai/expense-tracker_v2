@@ -24,8 +24,8 @@ jwt:
   expiration-ms: 840000
 
 setting:
-  enableSaveLog: ${}
-  enableRegister: ${}
+  enableSaveLog: ${ENABLE_SAVE_LOG}
+  enableRegister: ${ENABLE_REGISTER}
 
 server:
   rate_limit: ${RATE_LIMIT}
