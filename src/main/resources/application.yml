@@ -1,6 +1,6 @@
 spring:
-#  profiles:
-#    active: local
+  profiles:
+    active: local
   application:
     name: guard
   cloud:
@@ -8,13 +8,13 @@ spring:
       discovery:
         locator:
           enabled: true
-    datasource:
-      driver-class-name: org.postgresql.Driver
-      url: ${DB_HOST}
-      username: ${DB_USERNAME}
-      password: ${DB_PASSWORD}
-    jpa:
-      open-in-view: ${JPA_VIEW_MODE}
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: ${DB_HOST}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+  jpa:
+    open-in-view: ${JPA_VIEW_MODE}
 
   backend_server:
     web_url: ${FRONTEND_URL}
