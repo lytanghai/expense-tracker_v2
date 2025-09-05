@@ -37,9 +37,9 @@ public class WebConfig {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**") // allow all paths
-                        .allowedOrigins(SERVER_URL)
-                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                registry.addMapping("/**")
+                        .allowedOrigins(SERVER_URL)  // your frontend origin
+                        .allowedMethods("GET", "POST", "PATCH")
                         .allowedHeaders("*")
                         .allowCredentials(true);
             }
