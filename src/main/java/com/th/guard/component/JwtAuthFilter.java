@@ -2,6 +2,9 @@ package com.th.guard.component;
 
 import com.th.guard.repository.UserRepository;
 import com.th.guard.util.JwtUtil;
+import io.jsonwebtoken.Jwt;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,6 +21,8 @@ import java.util.Collections;
 @Component
 public class JwtAuthFilter extends OncePerRequestFilter {
 
+    private final Logger log = LoggerFactory.getLogger(JwtAuthFilter.class);
+
     @Autowired
     private JwtUtil jwtUtil;
 
@@ -29,8 +34,11 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws IOException, javax.servlet.ServletException {
 
+        log.info("Request incoming... {}", request.getMethod());
+
         // Skip OPTIONS requests (preflight)
         if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+            log.info("ignore authentication...");
             response.setStatus(HttpServletResponse.SC_OK);
             return;
         }
