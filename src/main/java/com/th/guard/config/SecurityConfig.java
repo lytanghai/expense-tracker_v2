@@ -41,17 +41,14 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
-                .cors()
-                .configurationSource(corsConfigurationSource())
+                .cors().configurationSource(corsConfigurationSource()) // ✅ must include
                 .and()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/api/auth/login", "/api/auth/register", "/api/auth/change-password").permitAll() // ✅ Public APIs
-                .anyRequest().authenticated() // ✅ Secure everything else
-                .and()
-                .addFilterBefore(jwtFilter, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.class);
+                .antMatchers("/expenditure-diary/api/auth/login",
+                        "/expenditure-diary/api/auth/register").permitAll()
+                .anyRequest().authenticated();
 
         return http.build();
     }
