@@ -42,6 +42,7 @@ public class SecurityConfig {
         http
                 .csrf().disable()
                 .cors()
+                .configurationSource(corsConfigurationSource())
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -59,7 +60,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(List.of(
-                "https://expense-tracker-v2-web.onrender.com",  // your frontend
+                SERVER_URL,  // your frontend
                 "http://localhost:3000" // allow local dev too
         ));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
