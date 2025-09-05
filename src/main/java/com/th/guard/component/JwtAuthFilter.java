@@ -38,8 +38,18 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         // Skip OPTIONS requests (preflight)
         if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
-            log.info("ignore authentication...");
-            response.setStatus(HttpServletResponse.SC_OK);
+            log.info("OPTIONS request - skip JWT");
+            filterChain.doFilter(request, response);
+            return;
+        }
+        String path = request.getRequestURI();
+
+        // ✅ Skip public endpoints
+        if (path.startsWith("/api/auth/login") ||
+                path.startsWith("/api/auth/register") ||
+                path.startsWith("/api/auth/change-password")) {
+            log.info("Public endpoint - skip JWT");
+            filterChain.doFilter(request, response);
             return;
         }
 
