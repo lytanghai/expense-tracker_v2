@@ -4,6 +4,7 @@ import com.th.guard.component.JwtAuthFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -42,19 +43,19 @@ public class SecurityConfig {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
+                // ✅ Allow preflight OPTIONS requests globally
+                .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                // ✅ public endpoints
                 .antMatchers(
                         "/api/auth/login",
                         "/api/auth/register",
-                        "/api/auth/change-password",
-                        "/**" // optional: allow OPTIONS requests through
+                        "/api/auth/change-password"
                 ).permitAll()
+                // ✅ all other requests require authentication
                 .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(jwtFilter,
                         org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.class);
-
-        // Let OPTIONS requests pass through
-        http.authorizeRequests().antMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll();
 
         return http.build();
     }
