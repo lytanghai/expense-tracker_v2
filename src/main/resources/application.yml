@@ -19,8 +19,8 @@ spring:
   backend_server:
     web_url: ${FRONTEND_URL}
 
-  jwt:
-    secret_key: ${JWT_SECRET_KEY}
+jwt:
+  secret_key: ${JWT_SECRET_KEY}
 
   server:
     rate_limit: ${RATE_LIMIT}
