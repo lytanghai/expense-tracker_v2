@@ -17,12 +17,6 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-
 @Configuration
 public class SecurityConfig {
 
@@ -48,37 +42,13 @@ public class SecurityConfig {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                // ✅ Automatically allow preflight OPTIONS for public endpoints
-                .antMatchers(HttpMethod.OPTIONS, "/api/auth/login",
-                        "/api/auth/register",
-                        "/api/auth/change-password").permitAll()
-                // ✅ Public endpoints
-                .antMatchers(
-                        "/api/auth/login",
-                        "/api/auth/register",
-                        "/api/auth/change-password"
+                .antMatchers(HttpMethod.OPTIONS,
+                        "/api/auth/login", "/api/auth/register", "/api/auth/change-password").permitAll()
+                .antMatchers("/api/auth/login", "/api/auth/register", "/api/auth/change-password"
                 ).permitAll()
-                // ✅ All other requests require authentication
                 .anyRequest().authenticated()
                 .and()
-                .addFilterBefore(new JwtAuthFilter() {
-                    @Override
-                    protected void doFilterInternal(HttpServletRequest request,
-                                                    HttpServletResponse response,
-                                                    FilterChain filterChain)
-                            throws ServletException, IOException {
-                        // ✅ Skip JWT validation for OPTIONS and public endpoints
-                        if (request.getMethod().equalsIgnoreCase("OPTIONS") ||
-                                request.getRequestURI().startsWith("/api/auth/login") ||
-                                request.getRequestURI().startsWith("/api/auth/register") ||
-                                request.getRequestURI().startsWith("/api/auth/change-password")) {
-                            filterChain.doFilter(request, response);
-                            return;
-                        }
-                        // Otherwise proceed with normal JWT filter
-                        super.doFilterInternal(request, response, filterChain);
-                    }
-                }, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
