@@ -2,7 +2,6 @@ package com.th.guard.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
@@ -12,9 +11,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 public class WebConfig {
-
-    @Value("${backend_server.web_url}")
-    private String SERVER_URL;
 
     @Bean
     public RestTemplate restTemplate() {
@@ -37,7 +33,7 @@ public class WebConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins(SERVER_URL)  // your frontend origin
+                        .allowedOrigins("https://expense-tracker-v2-web.onrender.com")
                         .allowedMethods("GET", "POST", "PATCH")
                         .allowedHeaders("*")
                         .allowCredentials(true);

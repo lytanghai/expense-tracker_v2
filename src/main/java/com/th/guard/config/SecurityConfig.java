@@ -21,9 +21,6 @@ import java.util.List;
 @Configuration
 public class SecurityConfig {
 
-    @Value("${backend_server.web_url:https://expense-tracker-v2-web.onrender.com}")
-    private String SERVER_URL; // no trailing slash
-
     @Autowired
     private JwtAuthFilter jwtFilter;
 
@@ -57,7 +54,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(List.of(
-                SERVER_URL,  // your frontend
+                "https://expense-tracker-v2-web.onrender.com",  // your frontend
                 "http://localhost:3000" // allow local dev too
         ));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
