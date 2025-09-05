@@ -37,7 +37,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
-                .cors().configurationSource(corsConfigurationSource()) // ✅ global CORS
+                .cors().configurationSource(corsConfigurationSource())
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
@@ -45,11 +45,16 @@ public class SecurityConfig {
                 .antMatchers(
                         "/api/auth/login",
                         "/api/auth/register",
-                        "/api/auth/change-password"
+                        "/api/auth/change-password",
+                        "/**" // optional: allow OPTIONS requests through
                 ).permitAll()
                 .anyRequest().authenticated()
                 .and()
-                .addFilterBefore(jwtFilter, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtFilter,
+                        org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.class);
+
+        // Let OPTIONS requests pass through
+        http.authorizeRequests().antMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll();
 
         return http.build();
     }
@@ -57,15 +62,14 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-
-        // ✅ global free CORS
-        config.setAllowedOrigins(List.of("*"));           // allow any origin
-        config.setAllowedMethods(List.of("*"));           // allow all HTTP methods
-        config.setAllowedHeaders(List.of("*"));           // allow all headers
-        config.setAllowCredentials(false);               // MUST be false for "*" origins
+        config.addAllowedOriginPattern("*"); // ✅ allow any origin dynamically
+        config.addAllowedMethod("*");        // allow all HTTP methods
+        config.addAllowedHeader("*");        // allow all headers
+        config.setAllowCredentials(false);   // MUST be false for "*" origins
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", config);  // apply globally
+        source.registerCorsConfiguration("/**", config);
         return source;
     }
+
 }
