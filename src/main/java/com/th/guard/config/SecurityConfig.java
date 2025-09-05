@@ -45,9 +45,9 @@ public class SecurityConfig {
                 .authorizeRequests()
                 // public endpoints
                 .antMatchers(
-                        "/expenditure-diary/api/auth/login",
-                        "/expenditure-diary/api/auth/register",
-                        "/expenditure-diary/api/auth/change-password"
+                        "/api/auth/login",
+                        "/api/auth/register",
+                        "/api/auth/change-password"
                 ).permitAll()
                 // all others require authentication
                 .anyRequest().authenticated()
