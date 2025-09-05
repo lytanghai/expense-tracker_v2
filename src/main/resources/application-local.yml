@@ -36,6 +36,9 @@ jwt:
     users:
       admin_usr: tanghai
       admin_pwd: 093606872
+setting:
+  enableSaveLog: true
+  enableRegister: true
 
 server:
   rate_limit: 100

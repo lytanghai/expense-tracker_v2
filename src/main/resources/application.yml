@@ -23,6 +23,10 @@ jwt:
   secret_key: ${JWT_SECRET_KEY}
   expiration-ms: 840000
 
+setting:
+  enableSaveLog: ${}
+  enableRegister: ${}
+
 server:
   rate_limit: ${RATE_LIMIT}
   servlet:
