@@ -38,33 +38,39 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
-                .cors().configurationSource(corsConfigurationSource()) // ✅ must include
+                .cors().configurationSource(corsConfigurationSource()) // ✅ handle CORS
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/expenditure-diary/api/auth/login",
-                        "/expenditure-diary/api/auth/register").permitAll()
-                .anyRequest().authenticated();
+                // public endpoints
+                .antMatchers(
+                        "/expenditure-diary/api/auth/login",
+                        "/expenditure-diary/api/auth/register",
+                        "/expenditure-diary/api/auth/change-password"
+                ).permitAll()
+                // all others require authentication
+                .anyRequest().authenticated()
+                .and()
+                // JWT filter before UsernamePasswordAuthenticationFilter
+                .addFilterBefore(jwtFilter, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of(
-                "https://expense-tracker-v2-web.onrender.com",  // your frontend
-                "http://localhost:3000" // allow local dev too
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowedOrigins(List.of(
+                "https://expense-tracker-v2-web.onrender.com", // production frontend
+                "http://localhost:3000"                        // local dev
         ));
-        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(List.of("*"));
-        configuration.setAllowCredentials(true);
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.setAllowedHeaders(List.of("*"));
+        config.setAllowCredentials(true); // allow cookies if needed
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-
+        source.registerCorsConfiguration("/**", config);
         return source;
     }
-
 }
