@@ -8,36 +8,25 @@ spring:
       discovery:
         locator:
           enabled: true
-
-  datasource:
-    driver-class-name: org.postgresql.Driver
-    url: ${DB_HOST}
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
+    datasource:
+      driver-class-name: org.postgresql.Driver
+      url: ${DB_HOST}
+      username: ${DB_USERNAME}
+      password: ${DB_PASSWORD}
     jpa:
-      database-platform: org.hibernate.dialect.PostgreSQLDialect
-      hibernate:
-        ddl-auto: update
       open-in-view: ${JPA_VIEW_MODE}
 
-jwt:
-  secret_key: ${JWT_SECRET_KEY}
-  expiration-ms: 86400000
+  backend_server:
+    web_url: ${FRONTEND_URL}
 
-backend_server:
-  web_url: ${UI_WEB_URL:https://expense-tracker-v2-web.onrender.com}
+  jwt:
+    secret_key: ${JWT_SECRET_KEY}
 
-setting:
-  enableSaveLog: ${ENABLE_SAVE_LOG}
-  enableRegister: ${ALLOW_REGISTER}
+  server:
+    rate_limit: ${RATE_LIMIT}
+    servlet:
+      context-path: /guard
+    port: 8080
 
-server:
-  rate_limit: ${RATE_LIMIT}
-  servlet:
-    context-path: /guard
-  port: 8080
-
-app:
-  version: BETA.0.0.1
-  cors:
-    allowed-origin: "https://expense-tracker-v2-web.onrender.com"
+  app:
+    version: 1.0.10

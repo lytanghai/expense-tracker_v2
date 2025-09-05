@@ -7,36 +7,34 @@ spring:
         locator:
           enabled: true
   datasource:
-      url: jdbc:postgresql://localhost:5432/configure
-      username: postgres
-      password: 309927605
-      driver-class-name: org.postgresql.Driver
+    driver-class-name: org.postgresql.Driver
+    #Work
+    url: jdbc:postgresql://localhost:5432/configure
+    username: postgres
+    password: 309927605
+
+    #HOME
+  #    url: jdbc:postgresql://localhost:5432/postgres
+  #    username: postgres
+  #    password: admin
 
   jpa:
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
-    hibernate:
-      ddl-auto: update
     open-in-view: false
+
+    #Personal
+#    url: jdbc:postgresql://localhost:5432/merchant
+#    username: postgres
+#    password: admin
 
 backend_server:
   web_url: http://localhost:5173
-  expiration-ms: 86400000
 
 jwt:
-  secret_key: "aVeryLongSecretKeyThatIsAtLeastSixtyFourCharactersLongForHS512Encryption!!!"
+  secret_key: YourSuperSecretKeyThatIsAtLeast32CharsLong!
   auth:
     users:
       admin_usr: tanghai
       admin_pwd: 093606872
-
-telegram:
-  enable: false
-  bot-token: 123
-  chat-id: 123
-
-setting:
-  enableSaveLog: false
-  enableRegister: true
 
 server:
   rate_limit: 100
@@ -46,5 +44,3 @@ server:
 
 app:
   version: 1.0.10
-  cors:
-    allowed-origin: "https://expense-tracker-v2-web.onrender.com"
