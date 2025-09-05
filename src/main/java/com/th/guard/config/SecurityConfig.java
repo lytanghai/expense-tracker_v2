@@ -17,7 +17,11 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.util.List;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 @Configuration
 public class SecurityConfig {
@@ -44,12 +48,10 @@ public class SecurityConfig {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                // ✅ Allow all OPTIONS requests for public endpoints
-                .antMatchers(HttpMethod.OPTIONS,
-                        "/api/auth/login",
+                // ✅ Automatically allow preflight OPTIONS for public endpoints
+                .antMatchers(HttpMethod.OPTIONS, "/api/auth/login",
                         "/api/auth/register",
-                        "/api/auth/change-password")
-                .permitAll()
+                        "/api/auth/change-password").permitAll()
                 // ✅ Public endpoints
                 .antMatchers(
                         "/api/auth/login",
@@ -59,8 +61,24 @@ public class SecurityConfig {
                 // ✅ All other requests require authentication
                 .anyRequest().authenticated()
                 .and()
-                // Add JWT filter before UsernamePasswordAuthenticationFilter
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new JwtAuthFilter() {
+                    @Override
+                    protected void doFilterInternal(HttpServletRequest request,
+                                                    HttpServletResponse response,
+                                                    FilterChain filterChain)
+                            throws ServletException, IOException {
+                        // ✅ Skip JWT validation for OPTIONS and public endpoints
+                        if (request.getMethod().equalsIgnoreCase("OPTIONS") ||
+                                request.getRequestURI().startsWith("/api/auth/login") ||
+                                request.getRequestURI().startsWith("/api/auth/register") ||
+                                request.getRequestURI().startsWith("/api/auth/change-password")) {
+                            filterChain.doFilter(request, response);
+                            return;
+                        }
+                        // Otherwise proceed with normal JWT filter
+                        super.doFilterInternal(request, response, filterChain);
+                    }
+                }, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
@@ -69,11 +87,11 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
 
-        // ✅ Global free CORS
-        config.addAllowedOriginPattern("*"); // allow any origin
+        // ✅ Global free CORS for any frontend
+        config.addAllowedOriginPattern("*"); // allow any origin dynamically
         config.addAllowedMethod("*");        // allow all HTTP methods
         config.addAllowedHeader("*");        // allow all headers
-        config.setAllowCredentials(false);   // must be false for "*"
+        config.setAllowCredentials(false);   // must be false if using "*"
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
