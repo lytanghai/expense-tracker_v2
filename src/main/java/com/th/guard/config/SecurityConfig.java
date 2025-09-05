@@ -2,7 +2,6 @@ package com.th.guard.config;
 
 import com.th.guard.component.JwtAuthFilter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -38,21 +37,18 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
-                .cors().configurationSource(corsConfigurationSource()) // ✅ handle CORS
+                .cors().configurationSource(corsConfigurationSource()) // ✅ global CORS
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                // public endpoints
                 .antMatchers(
                         "/api/auth/login",
                         "/api/auth/register",
                         "/api/auth/change-password"
                 ).permitAll()
-                // all others require authentication
                 .anyRequest().authenticated()
                 .and()
-                // JWT filter before UsernamePasswordAuthenticationFilter
                 .addFilterBefore(jwtFilter, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
@@ -61,16 +57,15 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of(
-                "https://expense-tracker-v2-web.onrender.com", // production frontend
-                "http://localhost:3000"                        // local dev
-        ));
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        config.setAllowedHeaders(List.of("*"));
-        config.setAllowCredentials(true); // allow cookies if needed
+
+        // ✅ global free CORS
+        config.setAllowedOrigins(List.of("*"));           // allow any origin
+        config.setAllowedMethods(List.of("*"));           // allow all HTTP methods
+        config.setAllowedHeaders(List.of("*"));           // allow all headers
+        config.setAllowCredentials(false);               // MUST be false for "*" origins
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", config);
+        source.registerCorsConfiguration("/**", config);  // apply globally
         return source;
     }
 }
