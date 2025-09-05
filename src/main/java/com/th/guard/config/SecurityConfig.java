@@ -12,6 +12,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -43,19 +44,23 @@ public class SecurityConfig {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                // ✅ Allow preflight OPTIONS requests globally
-                .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                // ✅ public endpoints
+                // ✅ Allow all OPTIONS requests for public endpoints
+                .antMatchers(HttpMethod.OPTIONS,
+                        "/api/auth/login",
+                        "/api/auth/register",
+                        "/api/auth/change-password")
+                .permitAll()
+                // ✅ Public endpoints
                 .antMatchers(
                         "/api/auth/login",
                         "/api/auth/register",
                         "/api/auth/change-password"
                 ).permitAll()
-                // ✅ all other requests require authentication
+                // ✅ All other requests require authentication
                 .anyRequest().authenticated()
                 .and()
-                .addFilterBefore(jwtFilter,
-                        org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.class);
+                // Add JWT filter before UsernamePasswordAuthenticationFilter
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
@@ -63,14 +68,15 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.addAllowedOriginPattern("*"); // ✅ allow any origin dynamically
+
+        // ✅ Global free CORS
+        config.addAllowedOriginPattern("*"); // allow any origin
         config.addAllowedMethod("*");        // allow all HTTP methods
         config.addAllowedHeader("*");        // allow all headers
-        config.setAllowCredentials(false);   // MUST be false for "*" origins
+        config.setAllowCredentials(false);   // must be false for "*"
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
         return source;
     }
-
 }
