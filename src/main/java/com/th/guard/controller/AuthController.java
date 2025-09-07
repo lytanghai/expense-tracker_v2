@@ -1,6 +1,7 @@
 package com.th.guard.controller;
 
 import com.th.guard.dto.req.ChangePasswordReq;
+import com.th.guard.dto.req.ExpReq;
 import com.th.guard.dto.req.LoginReq;
 import com.th.guard.dto.req.RegisterReq;
 import com.th.guard.dto.resp.CommonResp;
@@ -9,7 +10,9 @@ import com.th.guard.dto.resp.RegisterResp;
 import com.th.guard.service.AuthenticationService;
 import com.th.guard.util.ResponseBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 @RestController
 @RequestMapping("/public/auth")
@@ -17,6 +20,31 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     @Autowired private AuthenticationService authenticationService;
+
+    @PostMapping("/experimental")
+    public ResponseEntity<String> experimental(@RequestBody ExpReq expReq) {
+        RestTemplate restTemplate = new RestTemplate();
+
+        HttpHeaders headers = new HttpHeaders();
+        if (expReq.getHeaders() != null) {
+            expReq.getHeaders().forEach(headers::add); // ✅ Correct use of lambda
+        }
+
+        HttpEntity<Object> requestEntity = new HttpEntity<>(expReq.getPayload(), headers);
+
+        try {
+            ResponseEntity<String> response = restTemplate.exchange(
+                    expReq.getUrl(),
+                    HttpMethod.valueOf(expReq.getMethod().toUpperCase()),
+                    requestEntity,
+                    String.class
+            );
+            return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error: " + e.getMessage());
+        }
+    }
 
     @PostMapping("/register")
     public ResponseBuilder<RegisterResp> register(@RequestBody RegisterReq req) {

@@ -1,6 +1,7 @@
 package com.th.guard.config;
 
 import com.th.guard.component.JwtAuthenticationFilter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -20,6 +21,9 @@ import java.util.List;
 
 @Configuration
 public class SecurityConfig {
+
+    @Value("${backend_server.web_url}")
+    private String SERVER_URL;
 
     private final JwtAuthenticationFilter jwtAuthFilter;
 
@@ -42,7 +46,7 @@ public class SecurityConfig {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers(HttpMethod.POST, "/public/auth/register", "/public/auth/login", "/public/auth/change-password").permitAll()
+                .antMatchers(HttpMethod.POST, "/public/auth/experimental","/public/auth/register", "/public/auth/login", "/public/auth/change-password").permitAll()
                 .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
@@ -55,11 +59,13 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
+        System.out.println(SERVER_URL);
         config.setAllowedOrigins(List.of(
-                "https://expense-tracker-v2-web.onrender.com"  // frontend
+                "https://expense-tracker-v2-web.onrender.com",
+                "http://localhost:5173"// frontend
         ));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        config.setAllowedHeaders(List.of("Authorization", "Content-Type"));
+        config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
