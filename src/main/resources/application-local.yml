@@ -9,14 +9,14 @@ spring:
   datasource:
     driver-class-name: org.postgresql.Driver
     #Work
-#    url: jdbc:postgresql://localhost:5432/configure
-#    username: postgres
-#    password: 309927605
+    url: jdbc:postgresql://localhost:5432/configure
+    username: postgres
+    password: 309927605
 
     #HOME
-    url: jdbc:postgresql://localhost:5432/postgres
-    username: postgres
-    password: admin
+#    url: jdbc:postgresql://localhost:5432/postgres
+#    username: postgres
+#    password: admin
 
   jpa:
     open-in-view: false

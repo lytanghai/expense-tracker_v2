@@ -21,6 +21,12 @@ public class AuthController {
 
     @Autowired private AuthenticationService authenticationService;
 
+    @GetMapping("/wakeup")
+    public String wakeup() {
+        System.out.println("Wake-up request received!");
+        return "Server is awake!";
+    }
+
     @PostMapping("/experimental")
     public ResponseEntity<String> experimental(@RequestBody ExpReq expReq) {
         RestTemplate restTemplate = new RestTemplate();
