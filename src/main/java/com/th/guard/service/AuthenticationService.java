@@ -36,7 +36,6 @@ public class AuthenticationService {
     @Autowired private UserRepository userRepo;
     @Autowired private PasswordEncoder encoder;
     @Autowired private JwtUtil jwtUtil;
-    @Autowired private ActivityLogService activityLogService;
     @Autowired private SettingProperties settingProperties;
 
     private static final String USER_MUST_ENTER_PWD = "User must enter password!";
@@ -122,12 +121,9 @@ public class AuthenticationService {
 
                 userId = newUser.getId();
 
-                activityLogService.insert(USER_REGISTER, newUser.getId(), Constant.SUCCESS, Constant.SUCCESS);
-
             }catch (ServiceException exception) {
                 response.setResult(Constant.UNEXPECTED_ERROR);
                 response.setDetail(exception.getMessage());
-                activityLogService.insert(USER_REGISTER, userId, Constant.UNEXPECTED_ERROR, exception.getMessage());
             }
 
             return ResponseBuilder.success(response);
@@ -161,16 +157,13 @@ public class AuthenticationService {
                 response.setUsername(username);
                 response.setEmail(email);
                 response.setCreatedAtStr(DateUtil.format(user.getCreatedAt().toString()));
-                activityLogService.insert(USER_LOGIN, userId, Constant.SUCCESS, Constant.SUCCESS);
             } else {
                 response.setResult(Constant.GENERAL_ERROR);
                 response.setDetail(INVALID_CREDENTIAL);
-                activityLogService.insert(USER_LOGIN, userId, Constant.GENERAL_ERROR, INVALID_CREDENTIAL);
             }
 
         }catch (ServiceException e) {
             response.setResult(Constant.UNEXPECTED_ERROR);
-            activityLogService.insert(USER_LOGIN, userId, Constant.UNEXPECTED_ERROR, e.getMessage());
         }
 
         return ResponseBuilder.success(response);
@@ -198,15 +191,12 @@ public class AuthenticationService {
                 userRepo.save(user);
 
                 response.setResult(Constant.SUCCESS);
-                activityLogService.insert(USER_CHANGE_PWD, userId, Constant.SUCCESS, Constant.SUCCESS);
             } else {
-                activityLogService.insert(USER_CHANGE_PWD, userId, Constant.UNEXPECTED_ERROR, "Old Password is not valid!");
                 throw new ServiceException(Constant.GENERAL_ERROR, "Old Password is not valid!");
             }
         }catch (ServiceException e) {
             response.setResult(Constant.UNEXPECTED_ERROR);
             response.setDetail(e.getMessage());
-            activityLogService.insert(USER_CHANGE_PWD, userId, Constant.UNEXPECTED_ERROR, e.getMessage());
         }
 
         return ResponseBuilder.success(response);

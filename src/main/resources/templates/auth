@@ -8,11 +8,25 @@ CREATE TABLE users (
 );
 
 
-CREATE TABLE logs (
-    id BIGSERIAL PRIMARY KEY,
-    operation VARCHAR(50) not null,
-    user_id BIGSERIAL NOT NULL,
-    result varchar(20) not NULL,
-    result_detail varchar(100),
-    created_at TIMESTAMP NOT NULL DEFAULT NOW()
+CREATE TABLE profit_plan (
+    id SERIAL PRIMARY KEY,
+    year INT NOT NULL,
+    month INT NOT NULL CHECK (month BETWEEN 1 AND 12),
+    target NUMERIC(12,2) NOT NULL,        -- monthly target
+    result NUMERIC(12,2) DEFAULT 0,       -- actual achieved
+    type VARCHAR(20) NOT NULL CHECK (type IN ('crypto','forex')),
+    status VARCHAR(20) DEFAULT 'Pending'
+        CHECK (status IN ('Pending','Success','Failed')),
+    created_at TIMESTAMP DEFAULT NOW(),
+    UNIQUE (year, month, type)            -- avoid duplicates for same month+type
+);
+
+
+CREATE TABLE plan_detail (
+    id SERIAL PRIMARY KEY,
+    profit_plan_id INT NOT NULL REFERENCES profit_plan(id) ON DELETE CASCADE,
+    day INT NOT NULL CHECK (day BETWEEN 1 AND 31),
+    target NUMERIC(12,2) NOT NULL,        -- daily target
+    result NUMERIC(12,2) DEFAULT 0,       -- actual achieved
+    UNIQUE (profit_plan_id, day)
 );
