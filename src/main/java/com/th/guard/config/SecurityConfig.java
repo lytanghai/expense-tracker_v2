@@ -47,7 +47,7 @@ public class SecurityConfig {
                 .and()
                 .authorizeRequests()
                 .antMatchers(HttpMethod.POST,"/public/auth/experimental","/public/auth/register", "/public/auth/login", "/public/auth/change-password").permitAll()
-                .antMatchers(HttpMethod.GET, "/public/auth/wakeup").permitAll()
+                .antMatchers(HttpMethod.GET, "/public/auth/wakeup", "/profit-plan/send-msg").permitAll()
                 .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .anyRequest().authenticated()
                 .and()

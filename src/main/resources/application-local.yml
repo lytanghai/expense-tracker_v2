@@ -1,4 +1,17 @@
 spring:
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: tanghai1289@gmail.com
+    password: kovz guaq shtt lzce
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+
   application:
     name: guard
   cloud:
@@ -9,14 +22,14 @@ spring:
   datasource:
     driver-class-name: org.postgresql.Driver
     #Work
-    url: jdbc:postgresql://localhost:5432/configure
-    username: postgres
-    password: 309927605
+#    url: jdbc:postgresql://localhost:5432/configure kovz guaq shtt lzce
+#    username: postgres
+#    password: 309927605
 
     #HOME
-#    url: jdbc:postgresql://localhost:5432/postgres
-#    username: postgres
-#    password: admin
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: admin
 
   jpa:
     open-in-view: false

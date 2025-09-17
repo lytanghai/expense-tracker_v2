@@ -5,6 +5,7 @@ import com.th.guard.dto.req.ProfitPlanReq;
 import com.th.guard.dto.resp.CommonResp;
 import com.th.guard.dto.resp.ProfitPlanDto;
 import com.th.guard.entity.ProfitPlan;
+import com.th.guard.service.GmailService;
 import com.th.guard.service.ProfitPlanService;
 import com.th.guard.util.ResponseBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 public class ProfitPlanningController {
 
     @Autowired private ProfitPlanService profitPlanService;
+    @Autowired private GmailService gmailService;
 
     @PostMapping("/create")
     public ResponseBuilder<CommonResp> createProfitPlan(@RequestBody ProfitPlanReq profitPlanReq) {
@@ -44,6 +46,6 @@ public class ProfitPlanningController {
 
     @GetMapping("/send-msg")
     public void sendMessage(@RequestParam("type") String type, @RequestParam("plan_id") Integer planId) {
-        System.out.println("here");
+        gmailService.sendSimpleMessage("lytanghaii@gmail.com","Test","Test");
     }
 }
