@@ -50,7 +50,7 @@ public class TelegramService {
         text.append("📋 <b>Profit Plan Checklist</b>\n\n");
         text.append("<b>Type:</b> ").append(plan.getType()).append("\n");
         text.append("<b>Date:</b> ").append(plan.getMonth()).append("/").append(plan.getYear()).append("\n\n");
-        text.append("<b>Sent on:<b> ").append(DateUtil.format(new Date()));
+        text.append("<b>Sent on:</b> ").append(DateUtil.format(new Date()));
 
         text.append("<b>Day | Target | Result | Remark</b>\n");
 
