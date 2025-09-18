@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -23,6 +24,8 @@ public class GmailService {
     @Autowired private SettingProperties settingProperties;
 
     public void sendProfitPlanEmail(ProfitPlan plan, List<PlanDetail> planDetails) throws ResendException {
+
+        planDetails.sort(Comparator.comparingInt(PlanDetail::getDay));
 
         Resend reSend = new Resend(settingProperties.getResendToken());
         BigDecimal totalTarget = BigDecimal.ZERO;
@@ -63,7 +66,7 @@ public class GmailService {
 
             html.append("<tr style='background:").append(rowColor).append(";'>")
                     .append("<td style='padding:8px;border:1px solid #ddd;text-align:center;'>").append(d.getDay()).append("</td>")
-                    .append("<td style='padding:8px;border:1px solid #ddd;text-align:center;'>").append(d.getTarget()).append("$</td>")
+                    .append("<td style='padding:8px;border:1px solid #ddd;text-align:center;'>").append(d.getTarget()).append(d.getCurrency()).append("</td>")
                     .append("<td style='padding:8px;border:1px solid #ddd;text-align:center;'>").append(d.getResult()).append("$</td>")
                     .append("<td style='padding:8px;border:1px solid #ddd;text-align:center;'>").append(remark).append("</td>")
                     .append("</tr>");
