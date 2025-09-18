@@ -3,18 +3,7 @@ spring:
 #    active: local
   application:
     name: guard
-  mail:
-    host: smtp.gmail.com
-    port: 587
-    username: tanghai1289@gmail.com
-    password: ${GM_PWD}
-    properties:
-      mail:
-        smtp:
-          auth: true
-          starttls:
-            enable: true
-            required: true
+
   cloud:
     gateway:
       discovery:
@@ -30,7 +19,6 @@ spring:
 
 backend_server:
   web_url: ${FRONTEND_URL}
-  gm_pwd: ${GM_PWD}
 
 jwt:
   secret_key: ${JWT_SECRET_KEY}
@@ -39,6 +27,7 @@ jwt:
 setting:
   enableSaveLog: ${ENABLE_SAVE_LOG}
   enableRegister: ${ENABLE_REGISTER}
+  resendToken: ${RESEND_TOKEN}
 
 server:
   rate_limit: ${RATE_LIMIT}

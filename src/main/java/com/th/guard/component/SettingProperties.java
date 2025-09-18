@@ -8,6 +8,16 @@ import org.springframework.stereotype.Component;
 public class SettingProperties {
     private Boolean enableSaveLog;
     private boolean enableRegister;
+    private String resendToken;
+
+
+    public String getResendToken() {
+        return resendToken;
+    }
+
+    public void setResendToken(String resendToken) {
+        this.resendToken = resendToken;
+    }
 
     public boolean isEnableRegister() {
         return enableRegister;

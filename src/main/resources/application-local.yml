@@ -38,6 +38,7 @@ jwt:
 setting:
   enableSaveLog: true
   enableRegister: true
+  resendToken: re_iSroUxSS_KDxMpWhktrMfX5phRvNeCqa9
 
 telegram:
   enable: false

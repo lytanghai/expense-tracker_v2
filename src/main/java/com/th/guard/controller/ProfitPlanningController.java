@@ -1,5 +1,6 @@
 package com.th.guard.controller;
 
+import com.resend.core.exception.ResendException;
 import com.th.guard.dto.req.FilterRequest;
 import com.th.guard.dto.req.ProfitPlanReq;
 import com.th.guard.dto.resp.CommonResp;
@@ -11,8 +12,6 @@ import com.th.guard.util.ResponseBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
-
-import javax.mail.MessagingException;
 
 @RestController
 @RequestMapping("/profit-plan")
@@ -47,7 +46,7 @@ public class ProfitPlanningController {
     }
 
     @GetMapping("/send-msg")
-    public void sendMessage(@RequestParam("type") String type, @RequestParam("plan_id") Integer planId) throws MessagingException {
+    public void sendMessage(@RequestParam("type") String type, @RequestParam("plan_id") Integer planId) throws ResendException {
         profitPlanService.sendReport(type, planId);
     }
 }

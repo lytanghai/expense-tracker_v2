@@ -1,5 +1,6 @@
 package com.th.guard.service;
 
+import com.resend.core.exception.ResendException;
 import com.th.guard.dto.req.FilterRequest;
 import com.th.guard.dto.req.ProfitPlanReq;
 import com.th.guard.dto.resp.CommonResp;
@@ -20,13 +21,11 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import javax.mail.MessagingException;
 import javax.persistence.criteria.Predicate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -168,7 +167,7 @@ public class ProfitPlanService {
         };
     }
 
-    public void sendReport(String type,int planId) throws MessagingException {
+    public void sendReport(String type,int planId) throws ResendException {
         ProfitPlan plan = profitPlanRepo.findById(planId).orElse(null);
         log.info("sending report via {}", type);
         if(plan != null) {
