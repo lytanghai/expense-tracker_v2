@@ -170,9 +170,10 @@ public class ProfitPlanService {
 
     public void sendReport(String type,int planId) throws MessagingException {
         ProfitPlan plan = profitPlanRepo.findById(planId).orElse(null);
+        log.info("sending report via {}", type);
         if(plan != null) {
             List<PlanDetail> planDetails = planDetailRepo.findAllByProfitPlanId(planId);
-            if("gmail".equals(type.toLowerCase(Locale.ROOT))) {
+            if("gmail".equals(type)) {
                 gmailService.sendProfitPlanEmail(plan, planDetails);
             } else {
                 telegramService.sendProfitPlanTelegram(plan, planDetails);

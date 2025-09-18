@@ -2,6 +2,8 @@ package com.th.guard.service;
 
 import com.th.guard.entity.PlanDetail;
 import com.th.guard.entity.ProfitPlan;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -13,6 +15,7 @@ import java.util.List;
 @Service
 public class GmailService {
 
+    private static final Logger log = LoggerFactory.getLogger(GmailService.class);
     private final JavaMailSender javaMailSender;
 
     public GmailService(JavaMailSender javaMailSender) {
@@ -70,6 +73,7 @@ public class GmailService {
 
         helper.setText(html.toString(), true);
 
+        log.info("message sent successfully");
         javaMailSender.send(message);
     }
 }

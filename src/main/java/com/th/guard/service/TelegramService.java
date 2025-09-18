@@ -4,12 +4,14 @@ import com.th.guard.component.TelegramProperties;
 import com.th.guard.constant.Static;
 import com.th.guard.entity.PlanDetail;
 import com.th.guard.entity.ProfitPlan;
+import com.th.guard.util.DateUtil;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,7 +49,8 @@ public class TelegramService {
         StringBuilder text = new StringBuilder();
         text.append("📋 <b>Profit Plan Checklist</b>\n\n");
         text.append("<b>Type:</b> ").append(plan.getType()).append("\n");
-        text.append("<b>Month/Year:</b> ").append(plan.getMonth()).append("/").append(plan.getYear()).append("\n\n");
+        text.append("<b>Date:</b> ").append(plan.getMonth()).append("/").append(plan.getYear()).append("\n\n");
+        text.append("<b>Sent on:<b> ").append(DateUtil.format(new Date()));
 
         text.append("<b>Day | Target | Result | Remark</b>\n");
 
@@ -77,7 +80,6 @@ public class TelegramService {
                     .append("\n");
         }
 
-        text.append("\n_Sent on ").append(java.time.LocalDate.now()).append("_");
 
         Map<String, Object> request = new HashMap<>();
         request.put("chat_id", telegramProperties.getChatId());
