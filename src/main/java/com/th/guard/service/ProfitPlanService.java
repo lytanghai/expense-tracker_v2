@@ -5,12 +5,13 @@ import com.th.guard.dto.req.ProfitPlanReq;
 import com.th.guard.dto.resp.CommonResp;
 import com.th.guard.dto.resp.PlanDetailDto;
 import com.th.guard.dto.resp.ProfitPlanDto;
-import com.th.guard.dto.resp.ProfitPlanResp;
 import com.th.guard.entity.PlanDetail;
 import com.th.guard.entity.ProfitPlan;
 import com.th.guard.repository.PlanDetailRepo;
 import com.th.guard.repository.ProfitPlanRepo;
 import com.th.guard.util.ResponseBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,22 +20,26 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import javax.mail.MessagingException;
 import javax.persistence.criteria.Predicate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class ProfitPlanService {
 
+    private final Logger log = LoggerFactory.getLogger(ProfitPlanService.class);
+
     @Autowired private ProfitPlanRepo  profitPlanRepo;
-
     @Autowired private PlanDetailRepo planDetailRepo;
-
     @Autowired private PlanDetailService planDetailService;
+    @Autowired private GmailService gmailService;
+    @Autowired private TelegramService telegramService;
 
     public ResponseBuilder<CommonResp> createProfitPlan(ProfitPlanReq profitPlanReq) {
         ProfitPlan profitPlanEntity = new ProfitPlan();
@@ -111,7 +116,6 @@ public class ProfitPlanService {
         }
     }
 
-
     public ResponseBuilder<Page<ProfitPlan>> getFilteredExpenses(FilterRequest request) {
         Pageable pageable = PageRequest.of(request.getPage(), request.getSize(), Sort.by("id").descending());
 
@@ -162,5 +166,19 @@ public class ProfitPlanService {
 
             return cb.and(predicates.toArray(new Predicate[0]));
         };
+    }
+
+    public void sendReport(String type,int planId) throws MessagingException {
+        ProfitPlan plan = profitPlanRepo.findById(planId).orElse(null);
+        if(plan != null) {
+            List<PlanDetail> planDetails = planDetailRepo.findAllByProfitPlanId(planId);
+            if("GMAIL".equals(type.toLowerCase(Locale.ROOT))) {
+                gmailService.sendProfitPlanEmail(plan, planDetails);
+            } else {
+                telegramService.sendProfitPlanTelegram(plan, planDetails);
+            }
+            if(planDetails.size() > 0)
+                log.info("{}: Plan {} has {} records",type, planId, planDetails.size());
+        }
     }
 }

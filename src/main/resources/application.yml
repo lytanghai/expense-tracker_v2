@@ -1,6 +1,6 @@
 spring:
-  profiles:
-    active: local
+#  profiles:
+#    active: local
   application:
     name: guard
   cloud:
@@ -18,6 +18,7 @@ spring:
 
 backend_server:
   web_url: ${FRONTEND_URL}
+  gm_pwd: ${GM_PWD}
 
 jwt:
   secret_key: ${JWT_SECRET_KEY}
@@ -33,5 +34,10 @@ server:
     context-path: /guard
   port: 8080
 
+telegram:
+  enable: ${TELEGRAM_BOT_ENABLE}
+  bot-token: ${TELEGRAM_BOT_TOKEN}
+  chat-id: ${TELEGRAM_CHAT_ID}
+
 app:
-  version: 1.0.10
+  version: 1.1.12

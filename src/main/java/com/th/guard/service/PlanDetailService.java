@@ -11,9 +11,12 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 
 @Service
 public class PlanDetailService {
@@ -23,22 +26,33 @@ public class PlanDetailService {
     public void initChecklist(ProfitPlan profitPlan) {
         int month = profitPlan.getMonth();
         int year = profitPlan.getYear();
-        int days = YearMonth.of(year, month).lengthOfMonth();
+        int daysInMonth = YearMonth.of(year, month).lengthOfMonth();
         BigDecimal monthlyTarget = profitPlan.getTarget();
 
-        BigDecimal dailyTarget = monthlyTarget.divide(BigDecimal.valueOf(days), 2, RoundingMode.DOWN);
+        // Count weekdays (Mon–Fri) in this month
+        long weekdaysCount = IntStream.rangeClosed(1, daysInMonth)
+                .mapToObj(d -> LocalDate.of(year, month, d))
+                .filter(date -> !(date.getDayOfWeek() == DayOfWeek.SATURDAY || date.getDayOfWeek() == DayOfWeek.SUNDAY))
+                .count();
 
-        // Prepare PlanDetail records
+        BigDecimal dailyTarget = monthlyTarget.divide(BigDecimal.valueOf(weekdaysCount), 2, RoundingMode.DOWN);
+
         List<PlanDetail> details = new ArrayList<>();
         BigDecimal totalAssigned = BigDecimal.ZERO;
 
-        for (int day = 1; day <= days; day++) {
+        for (int day = 1; day <= daysInMonth; day++) {
+            LocalDate date = LocalDate.of(year, month, day);
+
+            if (date.getDayOfWeek() == DayOfWeek.SATURDAY || date.getDayOfWeek() == DayOfWeek.SUNDAY) {
+                continue; // skip weekends
+            }
+
             PlanDetail detail = new PlanDetail();
             detail.setProfitPlan(profitPlan);
             detail.setDay(day);
 
-            // For last day, adjust to ensure sum = monthlyTarget
-            if (day == days) {
+            // For the last weekday, adjust so the total = monthlyTarget
+            if (day == daysInMonth || totalAssigned.add(dailyTarget).compareTo(monthlyTarget) > 0) {
                 detail.setTarget(monthlyTarget.subtract(totalAssigned));
             } else {
                 detail.setTarget(dailyTarget);
@@ -48,10 +62,9 @@ public class PlanDetailService {
             details.add(detail);
         }
 
-        // Save all details in repository
         planDetailRepo.saveAll(details);
-
     }
+
 
     public ResponseBuilder<CommonResp> fillOut(PlanDetailCreateReq fillOutReq) {
         CommonResp commonResp = new CommonResp();

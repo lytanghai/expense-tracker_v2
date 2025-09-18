@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
+
 @RestController
 @RequestMapping("/profit-plan")
 public class ProfitPlanningController {
@@ -45,7 +47,7 @@ public class ProfitPlanningController {
     }
 
     @GetMapping("/send-msg")
-    public void sendMessage(@RequestParam("type") String type, @RequestParam("plan_id") Integer planId) {
-        gmailService.sendSimpleMessage("lytanghaii@gmail.com","Test","Test");
+    public void sendMessage(@RequestParam("type") String type, @RequestParam("plan_id") Integer planId) throws MessagingException {
+        profitPlanService.sendReport(type, planId);
     }
 }
