@@ -172,7 +172,7 @@ public class ProfitPlanService {
         ProfitPlan plan = profitPlanRepo.findById(planId).orElse(null);
         if(plan != null) {
             List<PlanDetail> planDetails = planDetailRepo.findAllByProfitPlanId(planId);
-            if("GMAIL".equals(type.toLowerCase(Locale.ROOT))) {
+            if("gmail".equals(type.toLowerCase(Locale.ROOT))) {
                 gmailService.sendProfitPlanEmail(plan, planDetails);
             } else {
                 telegramService.sendProfitPlanTelegram(plan, planDetails);
