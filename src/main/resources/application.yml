@@ -3,6 +3,18 @@ spring:
 #    active: local
   application:
     name: guard
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: tanghai1289@gmail.com
+    password: ${GM_PWD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
   cloud:
     gateway:
       discovery:
