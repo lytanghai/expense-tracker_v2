@@ -21,6 +21,9 @@ public class PlanDetail {
     @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal target;
 
+    @Column(nullable = false)
+    private String currency;
+
     @Column(precision = 12, scale = 2)
     private BigDecimal result = BigDecimal.ZERO;
 
@@ -64,4 +67,11 @@ public class PlanDetail {
         this.result = result;
     }
 
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
 }

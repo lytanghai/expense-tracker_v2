@@ -48,6 +48,7 @@ public class SecurityConfig {
                 .authorizeRequests()
                 .antMatchers(HttpMethod.POST,"/public/auth/experimental","/public/auth/register", "/public/auth/login", "/public/auth/change-password").permitAll()
                 .antMatchers(HttpMethod.GET, "/public/auth/wakeup").permitAll()
+                .antMatchers(HttpMethod.PATCH, "/profit-plan/update").permitAll()
                 .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
@@ -65,7 +66,7 @@ public class SecurityConfig {
                 "https://expense-tracker-v2-web.onrender.com",
                 "http://localhost:5173"// frontend
         ));
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.setAllowedMethods(List.of("GET","PATCH", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
 

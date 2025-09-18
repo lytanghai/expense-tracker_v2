@@ -14,6 +14,7 @@ CREATE TABLE profit_plan (
     month INT NOT NULL CHECK (month BETWEEN 1 AND 12),
     target NUMERIC(12,2) NOT NULL,        -- monthly target
     result NUMERIC(12,2) DEFAULT 0,       -- actual achieved
+    currency VARCHAR(5) NOT NULL,
     type VARCHAR(20) NOT NULL CHECK (type IN ('crypto','forex')),
     status VARCHAR(20) DEFAULT 'Pending'
         CHECK (status IN ('Pending','Success','Failed')),
@@ -28,5 +29,6 @@ CREATE TABLE plan_detail (
     day INT NOT NULL CHECK (day BETWEEN 1 AND 31),
     target NUMERIC(12,2) NOT NULL,        -- daily target
     result NUMERIC(12,2) DEFAULT 0,       -- actual achieved
+    currency VARCHAR(5) NOT NULL,
     UNIQUE (profit_plan_id, day)
 );

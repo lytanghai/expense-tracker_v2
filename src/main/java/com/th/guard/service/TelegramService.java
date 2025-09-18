@@ -58,7 +58,7 @@ public class TelegramService {
             String remark;
             if (d.getDay() < java.time.LocalDate.now().getDayOfMonth()) {
                 if (d.getResult().compareTo(d.getTarget()) < 0) {
-                    remark = "❌ (" + (d.getTarget().subtract(d.getResult())) + " $ left)";
+                    remark = "❌ (" + (d.getTarget().subtract(d.getResult())) + " " + d.getCurrency()+" left!)";
                 } else if (d.getResult().equals(d.getTarget())) {
                     remark = "✔️";
                 } else {

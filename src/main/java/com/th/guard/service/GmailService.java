@@ -83,7 +83,7 @@ public class GmailService {
         String message;
         if (totalResult.compareTo(totalTarget) < 0) {
             BigDecimal diff = totalTarget.subtract(totalResult);
-            message = "Keep going! You are " + diff + " USD below your target!";
+            message = "Keep going! You are " + diff + " " + plan.getCurrency() +" below your target!";
         } else if (totalResult.compareTo(totalTarget) == 0) {
             message = "Great! You've achieved your target exactly!!";
         } else {

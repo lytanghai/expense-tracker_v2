@@ -31,6 +31,9 @@ public class ProfitPlan {
     @Column(precision = 12, scale = 2)
     private BigDecimal result = BigDecimal.ZERO;
 
+    @Column(name = "currency")
+    private String currency;
+
     @Column(nullable = false)
     private String type;  // crypto or forex
 
@@ -85,6 +88,14 @@ public class ProfitPlan {
 
     public void setResult(BigDecimal result) {
         this.result = result;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
     }
 
     public String getType() {

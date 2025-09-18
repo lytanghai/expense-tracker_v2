@@ -13,6 +13,7 @@ public class ProfitPlanDto {
     private int month;
     private BigDecimal target;
     private BigDecimal result;
+    private String currency;
     private String type;
     private String status;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
@@ -26,6 +27,7 @@ public class ProfitPlanDto {
         this.year = profitPlan.getYear();
         this.month = profitPlan.getMonth();
         this.target = profitPlan.getTarget();
+        this.currency = profitPlan.getCurrency();
         this.result = profitPlan.getResult();
         this.type = profitPlan.getType();
         this.status = profitPlan.getStatus();
@@ -48,6 +50,14 @@ public class ProfitPlanDto {
 
     public BigDecimal getResult() { return result; }
     public void setResult(BigDecimal result) { this.result = result; }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
 
     public String getType() { return type; }
     public void setType(String type) { this.type = type; }

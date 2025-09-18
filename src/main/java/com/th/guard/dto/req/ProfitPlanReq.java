@@ -9,6 +9,7 @@ public class ProfitPlanReq {
     private Integer year;
     private BigDecimal targetAmount;
     private BigDecimal actualResult;
+    private String currency;
     private String result;
     private String type;
     private String status;
@@ -36,6 +37,14 @@ public class ProfitPlanReq {
 
     public void setYear(Integer year) {
         this.year = year;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
     }
 
     public BigDecimal getTargetAmount() {

@@ -22,10 +22,13 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.criteria.Predicate;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -45,7 +48,12 @@ public class ProfitPlanService {
         profitPlanEntity.setMonth(profitPlanReq.getMonth());
         profitPlanEntity.setYear(profitPlanReq.getYear());
         profitPlanEntity.setStatus("Pending");
-        profitPlanEntity.setTarget(profitPlanReq.getTargetAmount());
+        if(profitPlanReq.getCurrency().toUpperCase(Locale.ROOT).equals("USD")) {
+            profitPlanEntity.setTarget(profitPlanReq.getTargetAmount());
+        } else {
+            profitPlanEntity.setTarget(profitPlanReq.getTargetAmount().multiply(new BigDecimal(100)));
+        }
+        profitPlanEntity.setCurrency(profitPlanReq.getCurrency());
         profitPlanEntity.setType(profitPlanReq.getType());
 
         ProfitPlan result = profitPlanRepo.save(profitPlanEntity);
@@ -108,6 +116,18 @@ public class ProfitPlanService {
 
             if(profitPlanReq.getActualResult() != null) {
                 profitPlan.setResult(profitPlanReq.getActualResult());
+            }
+
+            if(profitPlanReq.getCurrency() != null) {
+                if(!profitPlanReq.getCurrency().toUpperCase(Locale.ROOT).equals(profitPlan.getCurrency().toUpperCase(Locale.ROOT))) {
+                    if(profitPlan.getCurrency().equals("USC")) {
+                        profitPlan.setTarget(profitPlanReq.getTargetAmount().multiply(new BigDecimal(100)));
+                    } else {
+                        profitPlan.setTarget(profitPlanReq.getTargetAmount().divide(new BigDecimal(100), RoundingMode.HALF_DOWN));
+                    }
+                    profitPlan.setCurrency(profitPlanReq.getCurrency().toUpperCase(Locale.ROOT));
+
+                }
             }
 
             // Save updated entity

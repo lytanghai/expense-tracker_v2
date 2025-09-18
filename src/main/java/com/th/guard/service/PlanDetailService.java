@@ -50,6 +50,7 @@ public class PlanDetailService {
             PlanDetail detail = new PlanDetail();
             detail.setProfitPlan(profitPlan);
             detail.setDay(day);
+            detail.setCurrency(profitPlan.getCurrency());
 
             // For the last weekday, adjust so the total = monthlyTarget
             if (day == daysInMonth || totalAssigned.add(dailyTarget).compareTo(monthlyTarget) > 0) {
@@ -83,7 +84,7 @@ public class PlanDetailService {
                 detail = "Great! You've achieved your target exactly.";
             } else {
                 BigDecimal diff = planDetail.getTarget().subtract(planDetail.getResult());
-                detail = "Keep going! You are " + diff + " USD below your target.";
+                detail = "Keep going! You are " + diff + " " + planDetail.getCurrency() +" below your target.";
             }
 
             commonResp.setDetail(detail);
