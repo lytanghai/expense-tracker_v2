@@ -22,7 +22,7 @@ backend_server:
 
 jwt:
   secret_key: ${JWT_SECRET_KEY}
-  expiration-ms: 840000
+  expiration-ms: 8400000
 
 setting:
   enableSaveLog: ${ENABLE_SAVE_LOG}

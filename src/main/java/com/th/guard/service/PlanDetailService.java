@@ -5,6 +5,7 @@ import com.th.guard.dto.resp.CommonResp;
 import com.th.guard.entity.PlanDetail;
 import com.th.guard.entity.ProfitPlan;
 import com.th.guard.repository.PlanDetailRepo;
+import com.th.guard.repository.ProfitPlanRepo;
 import com.th.guard.util.ResponseBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,12 +17,14 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.IntStream;
 
 @Service
 public class PlanDetailService {
 
     @Autowired private PlanDetailRepo planDetailRepo;
+    @Autowired private ProfitPlanRepo profitPlanRepo;
 
     public void initChecklist(ProfitPlan profitPlan) {
         int month = profitPlan.getMonth();
@@ -75,6 +78,12 @@ public class PlanDetailService {
             planDetail.setResult(fillOutReq.getResult());
             planDetailRepo.save(planDetail);
 
+            BigDecimal total = planDetailRepo.total(planDetail.getProfitPlan().getId());
+            Optional<ProfitPlan> profitPlan = profitPlanRepo.findById(planDetail.getProfitPlan().getId());
+            if(profitPlan.isPresent() && total.compareTo(profitPlan.get().getTarget()) >= 0) {
+                profitPlan.get().setStatus("Success");
+                profitPlanRepo.save(profitPlan.get());
+            }
             String detail;
             int cmp = planDetail.getResult().compareTo(planDetail.getTarget());
 
