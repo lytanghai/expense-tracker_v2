@@ -30,7 +30,7 @@ public class AuthController {
     @GetMapping("/wakeup")
     public void wakeup() {
         sleepFor += 1;
-        restTemplate.getForObject("https://api.gold-api.com/price/XAU", GoldApiResp.class).getPrice().toString();
+        restTemplate.getForObject("https://api.gold-api.com/price/XAU", GoldApiResp.class);
         log.info("server: Guard has been awake for {} times!", sleepFor);
     }
 
