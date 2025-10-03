@@ -5,6 +5,7 @@ import com.th.guard.dto.req.ExpReq;
 import com.th.guard.dto.req.LoginReq;
 import com.th.guard.dto.req.RegisterReq;
 import com.th.guard.dto.resp.CommonResp;
+import com.th.guard.dto.resp.GoldApiResp;
 import com.th.guard.dto.resp.LoginResp;
 import com.th.guard.dto.resp.RegisterResp;
 import com.th.guard.service.AuthenticationService;
@@ -23,12 +24,13 @@ public class AuthController {
     private final Logger log = LoggerFactory.getLogger(AuthController.class);
 
     @Autowired private AuthenticationService authenticationService;
-
+    private final RestTemplate restTemplate = new RestTemplate();
     private Integer sleepFor = 0;
 
     @GetMapping("/wakeup")
     public void wakeup() {
         sleepFor += 1;
+        restTemplate.getForObject("https://api.gold-api.com/price/XAU", GoldApiResp.class).getPrice().toString();
         log.info("server: Guard has been awake for {} times!", sleepFor);
     }
 

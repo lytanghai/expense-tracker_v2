@@ -12,7 +12,7 @@ public class KeepAlivePing {
 
     @Scheduled(fixedRate = 10 * 60 * 1000) // every 10 min
     public void goldApiResp() {
-        restTemplate.getForObject("https://api.gold-api.com/price/XAU", GoldApiResp.class).getPrice().toString();
+        restTemplate.getForObject("https://expense-tracker-v2-etap.onrender.com/guard/public/auth/wakeup", GoldApiResp.class).getPrice().toString();
         System.out.println("Pong");
 
     }
